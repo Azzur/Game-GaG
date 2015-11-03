@@ -1,0 +1,166 @@
+DROP DATABASE IF EXISTS GameGag;
+
+CREATE DATABASE IF NOT EXISTS GameGag;
+USE MLR1;
+# -----------------------------------------------------------------------------
+#       TABLE : UTILISATEUR
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS UTILISATEUR
+ (
+   ID_USER int  NOT NULL AUTO_INCREMENT ,
+   ID_ROLE int NOT NULL  ,
+   USERNAME char(32) NOT NULL  ,
+   EMAIL char(32) NOT NULL  ,
+   PASSWORD char(32) NOT NULL  
+   , PRIMARY KEY (ID_USER) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE UTILISATEUR
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_UTILISATEUR_ROLE
+     ON UTILISATEUR (ID_ROLE ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : POST
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS POST
+ (
+   ID_IMAGE int  NOT NULL AUTO_INCREMENT ,
+   NAME char(32) NOT NULL  ,
+   DESCRIPTION char(32) NOT NULL  ,
+   SOURCE_FILE char(32) NOT NULL  ,
+   USER_UPLOAD char(32) NULL  
+   , PRIMARY KEY (ID_IMAGE) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : ROLE
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ROLE
+ (
+   ID_ROLE int  NOT NULL AUTO_INCREMENT , 
+   LABEL char(32) NULL  
+   , PRIMARY KEY (ID_ROLE) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : UTILISATEUR_COMMENTAIRE
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS UTILISATEUR_COMMENTAIRE
+ (
+   ID_USER int NOT NULL  ,
+   ID_IMAGE int NOT NULL  ,
+   DATE date not NULL  ,
+   TEXTE char(32) NULL  
+   , PRIMARY KEY (ID_USER,ID_IMAGE) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE UTILISATEUR_COMMENTAIRE
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_UTILISATEUR_COMMENTAIRE_UTILISATEUR
+     ON UTILISATEUR_COMMENTAIRE (ID_USER ASC);
+
+CREATE  INDEX I_FK_UTILISATEUR_COMMENTAIRE_POST
+     ON UTILISATEUR_COMMENTAIRE (ID_IMAGE ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : UTILISATEUR_POST
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS UTILISATEUR_POST
+ (
+   ID_USER int  NOT NULL AUTO_INCREMENT , 
+   ID_IMAGE int  NOT NULL AUTO_INCREMENT ,
+   , PRIMARY KEY (ID_USER,ID_IMAGE) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE UTILISATEUR_POST
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_UTILISATEUR_POST_UTILISATEUR
+     ON UTILISATEUR_POST (ID_USER ASC);
+
+CREATE  INDEX I_FK_UTILISATEUR_POST_POST
+     ON UTILISATEUR_POST (ID_IMAGE ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : UTILILSATEUR_VOTE
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS UTILILSATEUR_VOTE
+ (
+   ID_USER int  NOT NULL AUTO_INCREMENT , 
+   ID_IMAGE int  NOT NULL AUTO_INCREMENT   ,
+   LIKE char(32) NULL  
+   , PRIMARY KEY (ID_USER,ID_IMAGE) 
+ ) 
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE UTILILSATEUR_VOTE
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_UTILILSATEUR_VOTE_UTILISATEUR
+     ON UTILILSATEUR_VOTE (ID_USER ASC);
+
+CREATE  INDEX I_FK_UTILILSATEUR_VOTE_POST
+     ON UTILILSATEUR_VOTE (ID_IMAGE ASC);
+
+
+# -----------------------------------------------------------------------------
+#       CREATION DES REFERENCES DE TABLE
+# -----------------------------------------------------------------------------
+
+
+ALTER TABLE UTILISATEUR 
+  ADD FOREIGN KEY FK_UTILISATEUR_ROLE (ID_ROLE)
+      REFERENCES ROLE (ID_ROLE) ;
+
+
+ALTER TABLE UTILISATEUR_COMMENTAIRE 
+  ADD FOREIGN KEY FK_UTILISATEUR_COMMENTAIRE_UTILISATEUR (ID_USER)
+      REFERENCES UTILISATEUR (ID_USER) ;
+
+
+ALTER TABLE UTILISATEUR_COMMENTAIRE 
+  ADD FOREIGN KEY FK_UTILISATEUR_COMMENTAIRE_POST (ID_IMAGE)
+      REFERENCES POST (ID_IMAGE) ;
+
+
+ALTER TABLE UTILISATEUR_POST 
+  ADD FOREIGN KEY FK_UTILISATEUR_POST_UTILISATEUR (ID_USER)
+      REFERENCES UTILISATEUR (ID_USER) ;
+
+
+ALTER TABLE UTILISATEUR_POST 
+  ADD FOREIGN KEY FK_UTILISATEUR_POST_POST (ID_IMAGE)
+      REFERENCES POST (ID_IMAGE) ;
+
+
+ALTER TABLE UTILILSATEUR_VOTE 
+  ADD FOREIGN KEY FK_UTILILSATEUR_VOTE_UTILISATEUR (ID_USER)
+      REFERENCES UTILISATEUR (ID_USER) ;
+
+
+ALTER TABLE UTILILSATEUR_VOTE 
+  ADD FOREIGN KEY FK_UTILILSATEUR_VOTE_POST (ID_IMAGE)
+      REFERENCES POST (ID_IMAGE) ;
+
